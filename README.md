@@ -1,0 +1,1 @@
+# action-sarif-to-html
