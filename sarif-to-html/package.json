@@ -1,0 +1,26 @@
+{
+  "name": "sarif-to-html",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "test": "mocha --recursive -r ts-node/register \"src/*.test.ts\"",
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.14.8",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "chai": "^5.1.1",
+    "fs": "^0.0.1-security",
+    "mocha": "^10.5.2",
+    "nunjucks": "^3.2.4"
+  }
+}
