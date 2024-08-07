@@ -3,6 +3,7 @@ import { AlertSummary, CWECoverage, CodeScanResults, DependencySummary, CodeScan
 import { CodeScanningRules } from './ReportTypes';
 import Vulnerability from '../Vulnerability';
 import CodeScanningRule from '../CodeScanningRule';
+import {SarifRule} from '../sarif/SarifDataTypes';
 
 
 export default class ReportData {
@@ -38,6 +39,9 @@ export default class ReportData {
     }
 
     getJSONPayload(): JsonPayload {
+
+        let rules: RuleData[] =   this.getAppliedCodeScanningRules();
+
         const data : JsonPayload =  {
           github: {
             repo:"Repo XPT0",
@@ -54,10 +58,10 @@ export default class ReportData {
             },
           },
           scanning: {
-            rules: this.getAppliedCodeScanningRules(),
+            rules: rules,
             cwe: this.getCWECoverage() || {},
             //@ts-ignore
-            results: this.getCodeScanSummary(),
+            results: this.getCodeScanSummary(rules),
           }
         };
         return data;
@@ -96,7 +100,6 @@ export default class ReportData {
 
     getAppliedCodeScanningRules(): RuleData[] {
         const rules = this.data.runs[0].tool.extensions[0].rules;
-    
         const rulesdata : RuleData[]= [];
 
         if (rules) {
@@ -116,7 +119,7 @@ export default class ReportData {
             
           });
         }
-    
+        //console.log(rulesdata);
         return rulesdata;
     }
     
@@ -149,18 +152,24 @@ export default class ReportData {
     }
 
     
-    getCodeScanSummary(): CodeScanSummary {
+    getCodeScanSummary(rules: RuleData[]): CodeScanSummary {
     
         const now = new Date();
         const alerts: AlertSummary[] = []
         const severityAlertSumary: SeverityToAlertSummary= {};
 
         this.data.runs[0].results.forEach(result => {
-            
+            let ruleData: RuleData | undefined = rules.find(t=>t.name === result.ruleId);
+
+            if (ruleData === undefined) {
+              return;
+            }
+            const sarif : SarifRule = CodeScanningRule.RuleDataToSarifRule(ruleData);
             const  alert: AlertSummary = {
                 state: "open",
                 rule : {
-                    id: result.ruleId,                    
+                    id: result.ruleId,
+                    details : new CodeScanningRule(sarif),                    
                 },
                 created: now.toISOString(),
                 name:result.ruleId,

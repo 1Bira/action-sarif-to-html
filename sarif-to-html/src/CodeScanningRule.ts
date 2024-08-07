@@ -1,16 +1,23 @@
+import { RuleData } from './report/ReportTypes';
 import {SarifRule} from './sarif/SarifDataTypes';
+import SarifReport from './sarif/SarifReport';
 
 const CWE_REGEX = /external\/cwe\/(cwe-.*)/;
 
 export default class CodeScanningRule {
 
-    private readonly sarifRule: SarifRule;
+    private sarifRule: SarifRule;
+    private ruleData?: RuleData;
   
     readonly cwes: string[];
-  
-    constructor(sarifRule: SarifRule) {
-      this.sarifRule = sarifRule;
-      this.cwes = getCWEs(sarifRule.properties.tags);
+
+    
+    constructor(sarifRule: SarifRule) {      
+        this.sarifRule = sarifRule;
+        //this.ruleData = ruleData ?? undefined; 
+        //this.sarifRule = CodeScanningRule.RuleDataToSarifRule(this.ruleData);
+
+      this.cwes = CodeScanningRule.getCWEs(this.sarifRule.properties.tags);
     }
   
     get id(): string {
@@ -48,21 +55,50 @@ export default class CodeScanningRule {
     get defaultConfigurationLevel(): string {
       return this.sarifRule.defaultConfiguration.level;
     }
-  }
-  
-  function getCWEs(tags: string[]): string[] {
-    const cwes: string[] = [];
-  
-    if (tags) {
-      tags.forEach(tag => {
-        const match = CWE_REGEX.exec(tag);
-  
-        if (match) {
-          // @ts-ignore
-          cwes.push(match[1]);
-        }
-      });
+
+    static RuleDataToSarifRule(ruleData: RuleData): SarifRule {
+      let sarifRule: SarifRule = {
+            id :  ruleData.name,
+            name: ruleData.name,
+            defaultConfiguration:{
+              level: ruleData.severity
+            }, 
+            shortDescription: {
+              text: ruleData.shortDescription
+            },
+            fullDescription : {
+              text: ruleData.description,
+            },      
+            properties : {
+              kind : ruleData.kind,
+              precision : ruleData.precision,
+              "security-severity": ruleData.severity,
+              tags: ruleData.tags
+            }
+          };
+      return sarifRule;
     }
-  
-    return cwes.sort();
+
+    static getCWEs(tags: string[]): string[] {
+      const cwes: string[] = [];
+    
+      if (tags) {
+        tags.forEach(tag => {
+          const match = CWE_REGEX.exec(tag);
+    
+          if (match) {
+            // @ts-ignore
+            cwes.push(match[1]);
+          }
+        });
+      }
+    
+      return cwes.sort();
+    }
+
   }
+  
+  
+
+
+  

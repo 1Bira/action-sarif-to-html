@@ -1,5 +1,5 @@
-/*import * as core from '@actions/core';
-import ReportGenerator from "./report/ReportGenerator";
+import * as core from '@actions/core';
+import {ReportGenerator} from "./report/ReportGenerator";
 import execTemplate from "./tests/execTemplate";
 
 
@@ -27,4 +27,4 @@ export function run() {
       // Fail the workflow run if an error occurs
       if (error instanceof Error) core.setFailed(error.message)
     }
-  }*/
+  }

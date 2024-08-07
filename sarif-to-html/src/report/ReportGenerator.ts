@@ -10,6 +10,7 @@ import Template from '../Template';
 import { ReportingEx } from '../tests/Template.test';
 import * as fs from 'fs';
 import { getTestDirectoryFilePath } from '../testUtils';
+import * as core from '@actions/core';
 
 const OCTODEMO_GHAS_REPORTING : ReportingEx= {
     directory: 'octodemo/ghas-reporting',
@@ -18,16 +19,17 @@ const OCTODEMO_GHAS_REPORTING : ReportingEx= {
   };
 
 
-export default class ReportGenerator {
+export class ReportGenerator {
     run(): string {
-
+        core.info(`[✅] Start Action]`);
         let sarifresults: SarifResult[] = [];
         let sarifRules: CodeScanningRule;
-
+        
+        core.info(`[✅] Load File Sarif]`);
         const collector = new DataCollector();
         let sariflist = collector.getPayload("/home/bpiuser/Documents/repos/js/sarif-to-html/results/");
         //console.log(sariflist[0].payload.data);
-         sariflist.forEach(sarif => {
+        sariflist.forEach(sarif => {
             const sarifresults = sarif.payload.data.runs[0].results;
             const sarifRules = codeScanningRules(sarif.payload.data.runs[0]);    
             //console.log(`CWES : ${sarifRules[Object.keys(sarifRules)[2]].cwes}`);                 
@@ -41,13 +43,13 @@ export default class ReportGenerator {
         
         const reportData :ReportData = new ReportData(sarifReportData);
 
-        //console.log(reportData.getJSONPayload());
-
+        //console.log(reportData.getJSONPayload().scanning.rules[0]);
+        core.info(`[✅] Create Files]`);
         const reporttemplate = new Template();
         const fileContent = reporttemplate.render(reportData.getJSONPayload(), 'summary');
 
-        fs.writeFileSync(getTestDirectoryFilePath('octodemo/ghas-reporting','sumaryf.html'), fileContent);
-
+        fs.writeFileSync(getTestDirectoryFilePath('summaryf.html'), fileContent);
+        core.info(`[✅] End Action]`);
         //console.log(fileContent);
         //reporttemplate.render(data.getJSONPayload(), fileContent = reporting.render(data, 'summary'))
 
@@ -56,6 +58,7 @@ export default class ReportGenerator {
         });*/
        
         return "ok";
+
     }
 
     

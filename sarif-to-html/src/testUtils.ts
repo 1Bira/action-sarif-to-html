@@ -1,7 +1,7 @@
 import * as path from 'path';
 
 export function getTestDirectoryFilePath(...filePath: string[]): string {
-  const args = [__dirname, '..', '_tmp', ...filePath];
+  const args = [__dirname, '..', 'templates', ...filePath];
   return path.join(...args);
 }
 

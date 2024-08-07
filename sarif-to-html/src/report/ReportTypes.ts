@@ -94,7 +94,7 @@ export type RuleData = {
     url: string,
     rule: {
       id: string
-      details?: CodeScanningRule
+      details?: CodeScanningRule | undefined
     }
   }
 

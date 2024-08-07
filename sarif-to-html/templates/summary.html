@@ -215,48 +215,99 @@
 -->
 
 
-h2>Code Scaning</h2>
-<p>
-  Total CWE Vulnerabilities Checked: {{codeScanning.cwes.length}}
-<!--  <ul>-->
-  <div>
-    { % for item in codeScanning.cwe }}
-      <strong>{{item}}</strong>
-    { % endfor % }
+<div class="container-fluid">
+  <div class="section-header border-bottom">
+    <h4>List Open Scan Errors</h4>    
   </div>
-<!--  </ul>-->
-</p>
 
-<h3>Open Violations</h3>
-<ul>
-  <li>Errors: {{codeScanning.open.error.length}}</li>
-  <li>Warnings: {{codeScanning.open.warning.length}}</li>
-</ul>
+  <table class="table table-striped table-bordered">
+    <tr>
+      <th>Tool</th>
+      <th>Name</th>
+      <th>Created</th>
+      <th>kind</th>
+      <th>CWE</th>
+      <th>state</th>
+      <th>level</th>
+    </tr>
+    {% for item in scanning.results.open.scans.error %}
+    <tr>
+      <td>{{ item.tool }}</td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.created }}</td>
+      <td>{{ item.rule.details.sarifRule.properties.kind }}</td>
+      <td>{{ item.rule.details.cwes }}</td>
+      <td>{{ item.state }}</td>
+      <td>{{ item.rule.details.sarifRule.defaultConfiguration.level }}</td>
+    </tr>
+    {% endfor %}
+    {% for item in scanning.results.open.scans.warning %}
+    <tr>
+      <td>{{ item.tool }}</td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.created }}</td>
+      <td>{{ item.rule.details.sarifRule.properties.kind }}</td>
+      <td>{{ item.rule.details.cwes }}</td>
+      <td>{{ item.state }}</td>
+      <td>warning</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 
-<h4>Errors</h4>
-<table>
-  <tr>
-    <th>Tool</th>
-    <th>Name</th>
-    <th>Created</th>
-    <th>Tags</th>
-    <th>CWE</th>
-    <th>Link</th>
-  </tr>
-  {% for item in codeScanning.open.scans.error %}
-  <tr>
-    <td>{{item.tool}}</td>
-    <td>{{item.name}}</td>
-    <td>{{item.created}}</td>
-    <td>{{item.rule.details.tags}}</td>
-    <td>{{item.rule.details.cwes}}</td>
-    <td>{{item.url}}</td>
-  </tr>
-  {% endfor %}
-</table>
 
+<div class="mb-5"></div>
+  <div class="container-fluid">
+    <div class="section-header border-bottom">
+      <h4>List Dependency vulnerability</h4>    
+    </div>
 
-
+  <table class="table table-striped table-bordered">
+    <tr>
+      <th>Ecosystem</th>
+      <th>Name</th>
+      <th>Created</th>
+      <th>Vulnerability Version</th>
+      <th>Severity</th>
+      <th>Summary</th>
+      <th>Ghsaid</th>
+    </tr>
+    {% for item in sca.vulnerabilities.bySeverity.high %}
+    <tr>
+      <td>{{ item.data.securityVulnerability.package.ecosystem }}</td>
+      <td>{{ item.data.securityVulnerability.package.name }}</td>
+      <td>{{ item.data.createdAt }}</td>
+      <td>{{ item.data.securityVulnerability.vulnerableVersionRange }}</td>
+      <td>{{ item.data.securityVulnerability.severity }}</td>
+      <td>{{ item.data.securityAdvisory.summary }}</td>
+      <td>{{ item.data.securityAdvisory.ghsaId }}</td>
+    </tr>
+    {% endfor %}
+    {% for item in sca.vulnerabilities.bySeverity.moderate %}
+    <tr>
+      <td>{{ item.data.securityVulnerability.package.ecosystem }}</td>
+      <td>{{ item.data.securityVulnerability.package.name }}</td>
+      <td>{{ item.data.createdAt }}</td>
+      <td>{{ item.data.securityVulnerability.vulnerableVersionRange }}</td>
+      <td>{{ item.data.securityVulnerability.severity }}</td>
+      <td>{{ item.data.securityAdvisory.summary }}</td>
+      <td>{{ item.data.securityAdvisory.ghsaId }}</td>
+    </tr>
+    {% endfor %}
+    {% for item in sca.vulnerabilities.bySeverity.low %}
+    <tr>
+      <td>{{ item.data.securityVulnerability.package.ecosystem }}</td>
+      <td>{{ item.data.securityVulnerability.package.name }}</td>
+      <td>{{ item.data.createdAt }}</td>
+      <td>{{ item.data.securityVulnerability.vulnerableVersionRange }}</td>
+      <td>{{ item.data.securityVulnerability.severity }}</td>
+      <td>{{ item.data.securityAdvisory.summary }}</td>
+      <td>{{ item.data.securityAdvisory.ghsaId }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  </div>
+</div>
 
 </body>
 </html>

@@ -42,8 +42,8 @@ function getRules(report: SarifReportData) {
 
 function getAppliedRuleDetails(sarifRules: SarifRule[] | null): CodeScanningRule[] | null {
     if (sarifRules) {
-        return sarifRules.map(rule => {
-        return new CodeScanningRule(rule)
+        return sarifRules.map(rule => {          
+          return new CodeScanningRule(rule)
         });
     }
 

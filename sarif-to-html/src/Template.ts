@@ -5,7 +5,7 @@ const path = require('path')
   ;
 
 // Default templates as part of the action
-const EMBEDDED_TEMPLATES = path.join(__dirname, '..', '..', 'templates');
+const EMBEDDED_TEMPLATES = path.join(__dirname, '..', 'templates');
 
 export default class Template {
 
